@@ -99,6 +99,10 @@
 }
 
 @layer base {
+  /* ~17px at default 16px UA setting — scales rem-based type and spacing sitewide */
+  html {
+    font-size: 120.00%;
+  }
   * {
     @apply border-border outline-ring/50;
   }
