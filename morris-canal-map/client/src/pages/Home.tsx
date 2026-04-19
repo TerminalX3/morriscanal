@@ -1,48 +1,52 @@
-// Home.tsx
-// Morris Canal Centennial Interactive Map — Main Page
-// Design: 19th-Century Commemorative Heritage Broadside
-// Layout: Full-bleed map (left 60%) + right panel with tabs (40%)
-// Colors: Parchment #F8F3E8, Forest Green #2D5016, Burgundy #6B1F2A, Aged Gold #B8962E
-// Typography: Cinzel Decorative (display), Playfair Display (subheadings), Crimson Text (body)
+// Home.tsx — Morris Canal Centennial Interactive Map
+// Layout: header → site nav → image strip → filters → map (narrower) + wider detail panel
 
-import { useState, useCallback } from 'react';
-import { Map, Clock, BarChart2, Image, ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
-import CanalMap from '@/components/CanalMap';
-import LandmarkPanel from '@/components/LandmarkPanel';
-import Timeline from '@/components/Timeline';
-import StatsPanel from '@/components/StatsPanel';
-import Gallery from '@/components/Gallery';
-import { LANDMARKS, type Landmark } from '@/lib/canalData';
+import { useState, useCallback } from "react";
+import {
+  Map,
+  Clock,
+  BarChart2,
+  ChevronDown,
+  ChevronUp,
+  Menu,
+  X,
+} from "lucide-react";
+import CanalMap from "@/components/CanalMap";
+import { HeaderImageStrip } from "@/components/HeaderImageStrip";
+import LandmarkPanel from "@/components/LandmarkPanel";
+import { SiteNavBar } from "@/components/SiteNavBar";
+import Timeline from "@/components/Timeline";
+import StatsPanel from "@/components/StatsPanel";
+import { type Landmark } from "@/lib/canalData";
 
-type TabId = 'landmark' | 'timeline' | 'stats' | 'gallery';
+type TabId = "landmark" | "timeline" | "stats";
 
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
-  { id: 'landmark', label: 'Landmark', icon: <Map className="w-3.5 h-3.5" /> },
-  { id: 'timeline', label: 'Timeline', icon: <Clock className="w-3.5 h-3.5" /> },
-  { id: 'stats', label: 'Statistics', icon: <BarChart2 className="w-3.5 h-3.5" /> },
-  { id: 'gallery', label: 'Gallery', icon: <Image className="w-3.5 h-3.5" /> },
+  { id: "landmark", label: "Landmark", icon: <Map className="h-3.5 w-3.5" /> },
+  { id: "timeline", label: "Timeline", icon: <Clock className="h-3.5 w-3.5" /> },
+  { id: "stats", label: "Statistics", icon: <BarChart2 className="h-3.5 w-3.5" /> },
 ];
 
 const FILTER_OPTIONS = [
-  { value: 'all', label: 'All Sites' },
-  { value: 'terminus', label: 'Termini' },
-  { value: 'inclined-plane', label: 'Inclined Planes' },
-  { value: 'lock', label: 'Locks' },
-  { value: 'town', label: 'Towns' },
-  { value: 'aqueduct', label: 'Aqueducts' },
-  { value: 'summit', label: 'Summit' },
+  { value: "all", label: "All Sites" },
+  { value: "terminus", label: "Termini" },
+  { value: "inclined-plane", label: "Inclined Planes" },
+  { value: "lock", label: "Locks" },
+  { value: "town", label: "Towns" },
+  { value: "aqueduct", label: "Aqueducts" },
+  { value: "summit", label: "Summit" },
 ];
 
 export default function Home() {
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
-  const [activeTab, setActiveTab] = useState<TabId>('landmark');
-  const [filterType, setFilterType] = useState('all');
+  const [activeTab, setActiveTab] = useState<TabId>("landmark");
+  const [filterType, setFilterType] = useState("all");
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [mobilePanel, setMobilePanel] = useState(false);
 
   const handleLandmarkSelect = useCallback((landmark: Landmark | null) => {
     setSelectedLandmark(landmark);
-    setActiveTab('landmark');
+    setActiveTab("landmark");
     setMobilePanel(true);
   }, []);
 
@@ -51,20 +55,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-[#F8F3E8]">
-
-      {/* ═══════════════════════════════════════════════════
-          HEADER — Commemorative Banner
-      ═══════════════════════════════════════════════════ */}
+    <div className="flex min-h-screen flex-col bg-[#F8F3E8]">
       <header
-        className={`flex-shrink-0 relative overflow-hidden transition-all duration-300 ${
-          headerCollapsed ? 'h-12' : 'h-auto'
+        className={`relative flex-shrink-0 overflow-hidden transition-all duration-300 ${
+          headerCollapsed ? "h-12" : "h-auto"
         }`}
         style={{
-          background: 'linear-gradient(135deg, #1A3A0A 0%, #2D5016 40%, #1A3A0A 100%)',
+          background:
+            "linear-gradient(135deg, #1A3A0A 0%, #2D5016 40%, #1A3A0A 100%)",
         }}
       >
-        {/* Decorative texture */}
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -78,116 +78,132 @@ export default function Home() {
           }}
         />
 
-        {/* Collapsed state */}
         {headerCollapsed ? (
-          <div className="relative z-10 h-full flex items-center justify-between px-4">
+          <div className="relative z-10 flex h-full items-center justify-between px-4">
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-[#B8962E]/30 border border-[#B8962E]/50 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-[#B8962E]" />
+              <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#B8962E]/50 bg-[#B8962E]/30">
+                <div className="h-2 w-2 rounded-full bg-[#B8962E]" />
               </div>
-              <span className="font-cinzel text-white/90 text-sm tracking-widest">
+              <span className="font-cinzel text-sm tracking-widest text-white/90">
                 MORRIS CANAL CENTENNIAL · 1824–1924
               </span>
             </div>
             <button
+              type="button"
               onClick={() => setHeaderCollapsed(false)}
-              className="text-white/60 hover:text-white/90 transition-colors"
+              className="text-white/60 transition-colors hover:text-white/90"
+              aria-label="Expand header"
             >
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="h-4 w-4" />
             </button>
           </div>
         ) : (
           <div className="relative z-10 px-6 py-4">
-            {/* Top decorative border */}
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
+            <div className="mb-3 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
               <div className="flex gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#B8962E]/60" />
+                  <div key={i} className="h-1.5 w-1.5 rounded-full bg-[#B8962E]/60" />
                 ))}
               </div>
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
             </div>
 
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                {/* Centennial badge */}
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="px-3 py-1 border border-[#B8962E]/50 bg-[#B8962E]/10 rounded">
-                    <span className="font-cinzel text-[#B8962E] text-[10px] tracking-[0.2em] uppercase">
+            <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-start">
+              <div className="min-w-0 flex-1">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <div className="rounded border border-[#B8962E]/50 bg-[#B8962E]/10 px-3 py-1">
+                    <span className="font-cinzel text-[10px] tracking-[0.2em] text-[#B8962E] uppercase">
                       Centennial Commemoration · 1924–2024
                     </span>
                   </div>
                 </div>
 
-                {/* Main title */}
-                <h1 className="font-display text-white text-2xl md:text-3xl leading-tight tracking-wide">
+                <h1 className="font-display text-2xl leading-tight tracking-wide text-white md:text-3xl">
                   The Morris Canal
                 </h1>
-                <div className="font-cinzel text-[#B8962E] text-sm tracking-[0.15em] mt-0.5">
-                  NEW JERSEY'S MOUNTAIN-CLIMBING WATERWAY
+                <div className="font-cinzel mt-0.5 text-sm tracking-[0.15em] text-[#B8962E]">
+                  NEW JERSEY&apos;S MOUNTAIN-CLIMBING WATERWAY
                 </div>
 
-                {/* Subtitle */}
-                <p className="font-fell italic text-white/70 text-sm mt-2 max-w-xl leading-relaxed">
-                  "This Morris canal is certainly an extraordinary work; it not only varies its level sixteen hundred feet,
-                  but at one point runs along the side of a mountain thirty feet above the tops of the highest buildings."
-                  <span className="not-italic text-white/50 text-xs"> — Fanny Trollope, 1832</span>
+                <p className="font-fell mt-2 max-w-xl text-sm italic leading-relaxed text-white/70">
+                  &ldquo;This Morris canal is certainly an extraordinary work; it
+                  not only varies its level sixteen hundred feet, but at one
+                  point runs along the side of a mountain thirty feet above the
+                  tops of the highest buildings.&rdquo;
+                  <span className="not-italic text-xs text-white/50">
+                    {" "}
+                    — Fanny Trollope, 1832
+                  </span>
                 </p>
               </div>
 
-              {/* Right stats */}
-              <div className="hidden md:flex flex-col items-end gap-2 flex-shrink-0">
+              <div className="hidden flex-shrink-0 flex-col items-end gap-2 md:flex">
                 <div className="text-right">
-                  <div className="font-cinzel text-[#B8962E] text-[9px] tracking-widest uppercase">Route</div>
-                  <div className="font-playfair text-white text-sm">Phillipsburg → Jersey City</div>
+                  <div className="font-cinzel text-[9px] tracking-widest text-[#B8962E] uppercase">
+                    Route
+                  </div>
+                  <div className="font-playfair text-sm text-white">
+                    Phillipsburg → Jersey City
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-cinzel text-[#B8962E] text-[9px] tracking-widest uppercase">Length</div>
-                  <div className="font-playfair text-white text-sm">107 Miles · 1,674 ft Elevation</div>
+                  <div className="font-cinzel text-[9px] tracking-widest text-[#B8962E] uppercase">
+                    Length
+                  </div>
+                  <div className="font-playfair text-sm text-white">
+                    107 Miles · 1,674 ft Elevation
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-cinzel text-[#B8962E] text-[9px] tracking-widest uppercase">Active</div>
-                  <div className="font-playfair text-white text-sm">1829 – 1924</div>
+                  <div className="font-cinzel text-[9px] tracking-widest text-[#B8962E] uppercase">
+                    Active
+                  </div>
+                  <div className="font-playfair text-sm text-white">1829 – 1924</div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setHeaderCollapsed(true)}
-                  className="mt-1 text-white/40 hover:text-white/70 transition-colors"
+                  className="mt-1 text-white/40 transition-colors hover:text-white/70"
+                  aria-label="Collapse header"
                 >
-                  <ChevronUp className="w-4 h-4" />
+                  <ChevronUp className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
-            {/* Bottom decorative border */}
-            <div className="flex items-center gap-3 mt-3">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
-              <div className="font-cinzel text-[#B8962E]/60 text-[8px] tracking-[0.3em]">✦ ✦ ✦</div>
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
+            <div className="mt-3 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
+              <div className="font-cinzel text-[8px] tracking-[0.3em] text-[#B8962E]/60">
+                ✦ ✦ ✦
+              </div>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#B8962E]/60 to-[#B8962E]/60" />
             </div>
           </div>
         )}
       </header>
 
-      {/* ═══════════════════════════════════════════════════
-          TOOLBAR — Filter & Navigation
-      ═══════════════════════════════════════════════════ */}
+      <SiteNavBar />
+
+      <HeaderImageStrip />
+
       <div
-        className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b border-[#B8962E]/30"
-        style={{ backgroundColor: '#EDE0C4' }}
+        className="flex flex-shrink-0 flex-wrap items-center justify-between gap-2 border-b border-[#B8962E]/30 px-4 py-2"
+        style={{ backgroundColor: "#EDE0C4" }}
       >
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-cinzel text-[10px] tracking-widest text-[#8B6914] uppercase hidden sm:block">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-cinzel hidden text-[10px] tracking-widest text-[#8B6914] uppercase sm:block">
             Filter:
           </span>
           {FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.value}
+              type="button"
               onClick={() => setFilterType(opt.value)}
-              className={`px-2.5 py-1 text-[10px] font-cinzel tracking-wide rounded border transition-all duration-150 ${
+              className={`rounded border px-2.5 py-1 font-cinzel text-[10px] tracking-wide transition-all duration-150 ${
                 filterType === opt.value
-                  ? 'bg-[#2D5016] text-white border-[#2D5016]'
-                  : 'bg-transparent text-[#4a3520] border-[#B8962E]/40 hover:border-[#B8962E]'
+                  ? "border-[#2D5016] bg-[#2D5016] text-white"
+                  : "border-[#B8962E]/40 bg-transparent text-[#4a3520] hover:border-[#B8962E]"
               }`}
             >
               {opt.label}
@@ -195,66 +211,65 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Mobile panel toggle */}
         <button
+          type="button"
           onClick={() => setMobilePanel(!mobilePanel)}
-          className="md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-[#2D5016] text-white rounded text-xs font-cinzel tracking-wide"
+          className="flex items-center gap-1.5 rounded bg-[#2D5016] px-3 py-1.5 font-cinzel text-xs tracking-wide text-white md:hidden"
         >
-          {mobilePanel ? <X className="w-3.5 h-3.5" /> : <Menu className="w-3.5 h-3.5" />}
-          {mobilePanel ? 'Map' : 'Info'}
+          {mobilePanel ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          {mobilePanel ? "Map" : "Info"}
         </button>
       </div>
 
-      {/* ═══════════════════════════════════════════════════
-          MAIN CONTENT — Map + Right Panel
-      ═══════════════════════════════════════════════════ */}
-      <div className="flex-1 flex overflow-hidden min-h-0">
-
-        {/* Left: Interactive Map */}
-        <div className={`relative flex-1 min-w-0 ${mobilePanel ? 'hidden md:flex' : 'flex'} flex-col`}>
-          {/* Decorative frame corners */}
-          <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#B8962E]/40 z-10 pointer-events-none" />
-          <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#B8962E]/40 z-10 pointer-events-none" />
-          <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#B8962E]/40 z-10 pointer-events-none" />
-          <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#B8962E]/40 z-10 pointer-events-none" />
+      {/* Map + panel: fills at least viewport below chrome; page scrolls if content is taller */}
+      <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden md:min-h-[calc(100dvh-12rem)] md:flex-row">
+        <div
+          className={`relative flex min-h-0 min-w-0 flex-1 flex-col md:w-[44%] md:max-w-[46%] md:flex-none md:flex-shrink-0 lg:w-[42%] lg:max-w-[44%] ${
+            mobilePanel ? "hidden md:flex" : "flex"
+          }`}
+        >
+          <div className="pointer-events-none absolute left-2 top-2 z-10 h-6 w-6 border-l-2 border-t-2 border-[#B8962E]/40" />
+          <div className="pointer-events-none absolute right-2 top-2 z-10 h-6 w-6 border-r-2 border-t-2 border-[#B8962E]/40" />
+          <div className="pointer-events-none absolute bottom-2 left-2 z-10 h-6 w-6 border-b-2 border-l-2 border-[#B8962E]/40" />
+          <div className="pointer-events-none absolute bottom-2 right-2 z-10 h-6 w-6 border-b-2 border-r-2 border-[#B8962E]/40" />
 
           <CanalMap
             onLandmarkSelect={handleLandmarkSelect}
             selectedLandmark={selectedLandmark}
             filterType={filterType}
+            layoutKey={mobilePanel ? "info" : "map"}
           />
 
-          {/* Instruction overlay (shown when nothing selected) */}
           {!selectedLandmark && (
-            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-[#F8F3E8]/95 border border-[#B8962E] rounded shadow-lg px-4 py-2.5 pointer-events-none z-10">
-              <p className="font-fell italic text-[#4a3520] text-sm text-center whitespace-nowrap">
+            <div className="pointer-events-none absolute bottom-16 left-1/2 z-10 max-w-[90vw] -translate-x-1/2 rounded border border-[#B8962E] bg-[#F8F3E8]/95 px-4 py-2.5 shadow-lg">
+              <p className="text-center font-fell text-sm italic text-[#4a3520]">
                 Click any marker to explore a historical site
               </p>
             </div>
           )}
         </div>
 
-        {/* Right: Information Panel */}
         <div
           className={`
-            flex-shrink-0 flex flex-col border-l border-[#B8962E]/30
-            ${mobilePanel ? 'flex w-full md:w-[400px]' : 'hidden md:flex md:w-[400px]'}
+            flex min-h-0 min-w-0 flex-1 flex-col border-l border-[#B8962E]/30
+            md:min-w-[min(100%,28rem)] lg:min-w-[32rem]
+            ${mobilePanel ? "flex w-full" : "hidden md:flex"}
           `}
-          style={{ backgroundColor: '#F8F3E8' }}
+          style={{ backgroundColor: "#F8F3E8" }}
         >
-          {/* Tab navigation */}
           <div
-            className="flex-shrink-0 flex border-b border-[#B8962E]/30"
-            style={{ backgroundColor: '#EDE0C4' }}
+            className="flex flex-shrink-0 border-b border-[#B8962E]/30"
+            style={{ backgroundColor: "#EDE0C4" }}
           >
             {TABS.map((tab) => (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-[10px] font-cinzel tracking-wide transition-all duration-150 border-b-2 ${
+                className={`flex flex-1 items-center justify-center gap-1.5 py-3 font-cinzel text-[10px] tracking-wide transition-all duration-150 ${
                   activeTab === tab.id
-                    ? 'border-[#2D5016] text-[#2D5016] bg-[#F8F3E8]'
-                    : 'border-transparent text-[#4a3520]/60 hover:text-[#4a3520] hover:bg-[#E8D8B8]/40'
+                    ? "border-b-2 border-[#2D5016] bg-[#F8F3E8] text-[#2D5016]"
+                    : "border-b-2 border-transparent text-[#4a3520]/65 hover:bg-[#E8D8B8]/40 hover:text-[#4a3520]"
                 }`}
               >
                 {tab.icon}
@@ -263,33 +278,28 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Tab content */}
-          <div className="flex-1 overflow-hidden min-h-0">
-            {activeTab === 'landmark' && (
+          <div className="min-h-0 flex-1 overflow-hidden">
+            {activeTab === "landmark" && (
               <LandmarkPanel landmark={selectedLandmark} onClose={handleClose} />
             )}
-            {activeTab === 'timeline' && <Timeline />}
-            {activeTab === 'stats' && <StatsPanel />}
-            {activeTab === 'gallery' && <Gallery />}
+            {activeTab === "timeline" && <Timeline />}
+            {activeTab === "stats" && <StatsPanel />}
           </div>
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════
-          FOOTER — Commemorative
-      ═══════════════════════════════════════════════════ */}
       <footer
-        className="flex-shrink-0 px-4 py-2 border-t border-[#B8962E]/30 flex items-center justify-between"
-        style={{ backgroundColor: '#1A3A0A' }}
+        className="flex flex-shrink-0 flex-wrap items-center justify-between gap-2 border-t border-[#B8962E]/30 px-4 py-2"
+        style={{ backgroundColor: "#1A3A0A" }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-1 h-1 rounded-full bg-[#B8962E]" />
-          <span className="font-cinzel text-[#B8962E]/70 text-[9px] tracking-widest uppercase">
+          <div className="h-1 w-1 rounded-full bg-[#B8962E]" />
+          <span className="font-cinzel text-[9px] tracking-widest text-[#B8962E]/70 uppercase">
             Morris Canal · 1824–1924 · New Jersey
           </span>
-          <div className="w-1 h-1 rounded-full bg-[#B8962E]" />
+          <div className="h-1 w-1 rounded-full bg-[#B8962E]" />
         </div>
-        <div className="font-body text-white/30 text-[10px] italic">
+        <div className="font-body text-[10px] italic text-white/30">
           National Register of Historic Places · 1974
         </div>
       </footer>

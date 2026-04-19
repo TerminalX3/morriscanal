@@ -235,4 +235,23 @@
     stroke-dasharray: 8 4;
     animation: water-shimmer 3s ease-in-out infinite;
   }
+
+  /* Header image strip — infinite horizontal marquee */
+  @keyframes carousel-marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  .animate-carousel-marquee {
+    animation: carousel-marquee 50s linear infinite;
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-carousel-marquee {
+      animation: none;
+    }
+  }
 }

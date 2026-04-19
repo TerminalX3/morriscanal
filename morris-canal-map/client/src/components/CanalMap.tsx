@@ -10,6 +10,8 @@ interface CanalMapProps {
   onLandmarkSelect: (landmark: Landmark | null) => void;
   selectedLandmark: Landmark | null;
   filterType: string;
+  /** Pass e.g. mobile panel open state so Leaflet can reflow when the map is shown again. */
+  layoutKey?: string | number | boolean;
 }
 
 const MARKER_COLORS: Record<string, string> = {
@@ -26,6 +28,7 @@ export default function CanalMap({
   onLandmarkSelect,
   selectedLandmark,
   filterType,
+  layoutKey,
 }: CanalMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.CircleMarker[]>([]);
@@ -120,12 +123,13 @@ export default function CanalMap({
   }, [mapReady, selectedLandmark]);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative flex min-h-0 flex-1 flex-col">
       <MapView
         onMapReady={handleMapReady}
         initialCenter={[40.82, -74.55]}
         initialZoom={9}
-        className="h-full min-h-0"
+        layoutKey={layoutKey}
+        className="flex-1"
       />
       <div className="absolute bottom-4 left-4 z-[500] rounded border border-[#B8962E] bg-[#F8F3E8]/95 p-3 text-xs font-body shadow-lg">
         <div className="font-cinzel mb-2 text-[10px] font-semibold uppercase tracking-widest text-[#2D5016]">

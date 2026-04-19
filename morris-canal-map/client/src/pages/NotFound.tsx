@@ -1,49 +1,41 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "wouter";
 import { AlertCircle, Home } from "lucide-react";
-import { useLocation } from "wouter";
+import { SiteNavBar } from "@/components/SiteNavBar";
 
 export default function NotFound() {
-  const [, setLocation] = useLocation();
-
-  const handleGoHome = () => {
-    setLocation("/");
-  };
-
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <Card className="w-full max-w-lg mx-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardContent className="pt-8 pb-8 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-red-100 rounded-full animate-pulse" />
-              <AlertCircle className="relative h-16 w-16 text-red-500" />
-            </div>
+    <div className="flex min-h-screen flex-col bg-[#F8F3E8]">
+      <header
+        className="flex-shrink-0 border-b border-[#B8962E]/40 px-5 py-6"
+        style={{
+          background:
+            "linear-gradient(135deg, #1A3A0A 0%, #2D5016 40%, #1A3A0A 100%)",
+        }}
+      >
+        <h1 className="font-display text-2xl text-white sm:text-3xl">404</h1>
+        <p className="font-fell mt-2 text-base italic text-white/80 sm:text-lg">
+          Page not found
+        </p>
+      </header>
+      <SiteNavBar />
+      <main className="flex flex-1 flex-col items-center justify-center px-6 py-12 text-center">
+        <div className="mb-6 flex justify-center">
+          <div className="relative">
+            <div className="absolute inset-0 animate-pulse rounded-full bg-[#B8962E]/25" />
+            <AlertCircle className="relative h-14 w-14 text-[#6B1F2A] sm:h-16 sm:w-16" />
           </div>
-
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">404</h1>
-
-          <h2 className="text-xl font-semibold text-slate-700 mb-4">
-            Page Not Found
-          </h2>
-
-          <p className="text-slate-600 mb-8 leading-relaxed">
-            Sorry, the page you are looking for doesn't exist.
-            <br />
-            It may have been moved or deleted.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              onClick={handleGoHome}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+        <p className="font-body max-w-lg text-lg leading-relaxed text-[#4a3520] sm:text-xl">
+          Sorry — that address does not exist. It may have been moved or typed
+          incorrectly.
+        </p>
+        <Link href="/">
+          <span className="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-[#2D5016] bg-[#2D5016] px-5 py-2.5 font-cinzel text-sm text-white transition-colors hover:bg-[#1A3A0A] sm:text-base">
+            <Home className="h-5 w-5" />
+            Back to map
+          </span>
+        </Link>
+      </main>
     </div>
   );
 }

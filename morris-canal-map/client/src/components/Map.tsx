@@ -20,6 +20,11 @@ export interface MapViewProps {
   initialCenter?: [number, number];
   initialZoom?: number;
   onMapReady?: (map: L.Map) => void;
+  /**
+   * When this value changes (e.g. mobile map panel toggled), Leaflet will
+   * recalc tile layout — required after `display:none` or flex height changes.
+   */
+  layoutKey?: string | number | boolean;
 }
 
 export function MapView({
@@ -27,6 +32,7 @@ export function MapView({
   initialCenter = [40.82, -74.55],
   initialZoom = 9,
   onMapReady,
+  layoutKey,
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -56,7 +62,16 @@ export function MapView({
     mapRef.current = map;
     onMapReady?.(map);
 
+    const ro = new ResizeObserver(() => {
+      map.invalidateSize({ pan: false });
+    });
+    ro.observe(el);
+
+    const t = window.setTimeout(() => map.invalidateSize(), 200);
+
     return () => {
+      window.clearTimeout(t);
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
     };
@@ -66,6 +81,17 @@ export function MapView({
     const cleanup = init();
     return cleanup;
   }, [init]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const id = requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+    const t = window.setTimeout(() => map.invalidateSize({ pan: false }), 300);
+    return () => {
+      cancelAnimationFrame(id);
+      window.clearTimeout(t);
+    };
+  }, [layoutKey]);
 
   if (!ACCESS_TOKEN?.trim()) {
     return (
@@ -86,5 +112,14 @@ export function MapView({
     );
   }
 
-  return <div ref={containerRef} className={cn("w-full min-h-[500px]", className)} />;
+  /* Do not use min-h-0 in className — it collapses Leaflet on mobile. Floor height with svh for dynamic toolbars. */
+  return (
+    <div
+      ref={containerRef}
+      className={cn(
+        "relative z-0 h-full w-full min-h-[min(52svh,420px)] sm:min-h-[min(58svh,480px)] md:min-h-0",
+        className,
+      )}
+    />
+  );
 }
